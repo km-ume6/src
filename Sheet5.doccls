@@ -1,0 +1,7 @@
+﻿Option Explicit
+
+Private Sub Worksheet_SelectionChange(ByVal target As Range)
+    If target.Column > 1 And target.Count = 1 Then
+        If target.Offset(0, -1) = "パターン" Or target.Offset(0, -1) = "アップロード先" Then Call SendKeys2("%{DOWN}")
+    End If
+End Sub

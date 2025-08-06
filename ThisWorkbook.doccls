@@ -1,0 +1,29 @@
+﻿Option Explicit
+
+Private Sub Workbook_BeforeClose(Cancel As Boolean)
+    With New MyTool
+        If .mtGetKeyState(vbKeyShift) < 0 Then
+            If vbYes = MsgBox(prompt:="ウインドウサイズを記憶しますか？", Buttons:=vbYesNo, title:="自動アップロード") Then
+                Call .PushAppSize(ThisWorkbook, "Me")
+            End If
+        End If
+    End With
+End Sub
+
+Private Sub Workbook_Open()
+    With New MyTool
+        Call .ClearTable("CheckCoC")
+        Call .ClearTable("CheckPL")
+        Call .ClearTable("CheckOCR")
+        Call .ClearTable("ErrorOfOCR")  ' 2025/02/20 追加
+        With .FindTable("UploadList")
+            If Not .DataBodyRange Is Nothing Then .DataBodyRange.Delete
+        End With
+
+        If "" <> .Config("Config", "WindowSize_Me") Then
+            If vbYes = MsgBox(prompt:="ウインドウサイズを復元しますか？", Buttons:=vbYesNo, title:="自動アップロード") Then
+                Call .PopAppSize(ThisWorkbook, "Me")
+            End If
+        End If
+    End With
+End Sub
