@@ -27,3 +27,16 @@ Sub CopySheetToNewWorkbook(ws As Worksheet, savePath As String, Optional FileFor
     newWb.Close SaveChanges:=False
 End Sub
 
+' ファイル名に使えない文字が含まれていないかチェックする関数
+Function ContainsInvalidFileNameChars(s As String) As String
+    Dim invalidChars As String
+    invalidChars = "\/:*?""<>|"
+    Dim i As Integer, found As String
+    found = ""
+    For i = 1 To Len(invalidChars)
+        If InStr(s, Mid(invalidChars, i, 1)) > 0 Then
+            found = found & Mid(invalidChars, i, 1)
+        End If
+    Next i
+    ContainsInvalidFileNameChars = found
+End Function

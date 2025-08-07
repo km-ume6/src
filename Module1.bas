@@ -405,24 +405,28 @@ End Function
 
 ' PackingList違和感チェック
 Sub CheckPL()
-    
     Call Init
-    
     NewNamePL = ""  ' 追加 20250515 by maruyama, auld-CheckData-NEW
 
-    ' ファイル名サフィックスを取得 追加 20250521 by maruyama
-    fileNameSuffix = InputBox("ファイル名に付加する文字列を入力してください", "ファイル名サフィックス入力")
+    ' ファイル名サフィックスを取得（使えない文字があれば再入力を促す）
+    Dim invalidChars As String
+    Do
+        fileNameSuffix = InputBox("ファイル名に付加する文字列を入力してください", "ファイル名サフィックス入力")
+        invalidChars = ContainsInvalidFileNameChars(fileNameSuffix)
+        
+        If invalidChars <> "" Then
+            MsgBox "ファイル名に使えない文字が含まれています" & vbCrLf & invalidChars & vbCrLf & "再度入力してください。", vbExclamation, "入力エラー"
+        End If
+    Loop While invalidChars <> ""
 
     ' ファイル名変換の有効・無効フラグ取得
     Dim f As Boolean
     If mt.Config("Config", "ConvertFileNamePL") = "0" Then f = False Else f = True
-    
+
     Dim wsTarget As Worksheet: Set wsTarget = SelectWorksheet(SelectTarget("PL"), "pck", f)
-    
+
     If Not wsTarget Is Nothing Then
-        
         NewNamePL = wsTarget.Name     ' 追加 20250515 by maruyama, auld-CheckData-NEW
-        
         Call mt.PopAppSize(wsTarget.Parent, "PL")
         
         ' 処理結果出力先テーブルの基準セル
@@ -439,23 +443,20 @@ Sub CheckPL()
         Dim sc As Range: Set sc = wsTarget.Range("A1").CurrentRegion.Columns(1)
         Dim cntNotice As Integer: cntNotice = 0
         For l = sc.Row To sc.Rows.Count    ' 処理対象の行数でループする
-            
             ' 右端セルを選択
             Set r = sc.Cells(l, Columns.Count).End(xlToLeft)
             If ds = True Then
                 wsTarget.Parent.Activate
                 r.Select
             End If
-            
+
             ' 違和感表明
             If Right(r, 1) <> "," Then
-            ' 行末がカンマでなければ違和感あり！
-            
+                ' 行末がカンマでなければ違和感あり！
                 ' 例外処理（対象行にその単語が含まれていれば不問とする）
                 cntSafeWord = 0
                 cntSafeWord = cntSafeWord + InStr(r, "Measurement")
                 cntSafeWord = cntSafeWord + InStr(r, "T O T A L")
-                
                 If cntSafeWord = 0 Then
                     cntNotice = cntNotice + 1
                     tl.Offset(cntNotice, 0) = l
@@ -463,14 +464,14 @@ Sub CheckPL()
                     r.Select
                 End If
             End If
-            
+
             If ds = True Then
                 ThisWorkbook.Activate
                 tl.Offset(l, 0).Select
                 mt.ReDraw 1
             End If
         Next
-        
+
         ' 最下行から遡って連続カンマを削除する
         For l = sc.Rows.Count To sc.Row Step -1
             If mt.IsAllSameCharacters(sc.Cells(l)) = 7 Then
@@ -479,17 +480,15 @@ Sub CheckPL()
                 Exit For
             End If
         Next l
-        
+
         If cntNotice = 0 Then
             MsgBox prompt:="問題ありませんでした", title:="PackingListチェック結果"
-            
             ' アップロードエントリー
             Call AddUploadList("PL", mt.GetLocalFullPath(wsTarget.Parent))
         Else
             MsgBox prompt:="違和感ありです。元のファイルを修正してもらってください。", title:="PackingListチェック結果"
             If vbYes = MsgBox(prompt:="ブックを閉じても良いですか？", Buttons:=vbYesNo, title:="PackingListチェック結果") Then wsTarget.Parent.Close
         End If
-        
     End If
 End Sub
 
