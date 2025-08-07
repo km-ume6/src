@@ -153,8 +153,9 @@ Sub DeleteCellsPL_B(ws As Worksheet)
         Dim dstPath As String: dstPath = ChangeFileExtension(mt.GetDesktopPath() & "\tmp" & .Name, "xlsx")
         
         ' マクロなしブックとして保存する
-        Application.DisplayAlerts = False: .SaveAs Filename:=dstPath, FileFormat:=xlOpenXMLWorkbook: Application.DisplayAlerts = False
-        
+        ' Application.DisplayAlerts = False: .SaveAs Filename:=dstPath, FileFormat:=xlOpenXMLWorkbook: Application.DisplayAlerts = False
+        Call CopySheetToNewWorkbook(ws, dstPath, xlOpenXMLWorkbook)
+
         .Close SaveChanges:=False
         'FileCopy srcPath, dstPath
         

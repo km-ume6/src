@@ -410,6 +410,9 @@ Sub CheckPL()
     
     NewNamePL = ""  ' 追加 20250515 by maruyama, auld-CheckData-NEW
 
+    ' ファイル名サフィックスを取得 追加 20250521 by maruyama
+    fileNameSuffix = InputBox("ファイル名に付加する文字列を入力してください", "ファイル名サフィックス入力")
+
     ' ファイル名変換の有効・無効フラグ取得
     Dim f As Boolean
     If mt.Config("Config", "ConvertFileNamePL") = "0" Then f = False Else f = True
@@ -723,7 +726,7 @@ End Sub
 ' 引数
 ' ws    ：対象となるワークシート
 Sub DeleteCellsPL(ws As Worksheet)
-    'Call DeleteCellsPL_B(ws)
+    'Call DeleteCellsPL_A(ws)
     Call DeleteCellsPL_B(ws)
 End Sub
 

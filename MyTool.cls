@@ -79,10 +79,11 @@ End Function
 ' ws    ：ファイル名を作るときの部品を含むワークシート
 ' ext   ：ファイルの拡張子（これまでの経緯により）
 Function MakeBaseNamePL(ws As Worksheet, ext As String) As String
-    'MakeBaseNamePL = MakeBaseNamePL1(ws, ext)
-    'MakeBaseNamePL = MakeBaseNamePL2(ws, ext)
-    'MakeBaseNamePL = MakeBaseNamePL3(ws, ext)
-    MakeBaseNamePL = MakeBaseNamePL4(ws, ext)   ' 新関数！20250514 by maruyama
+    ' MakeBaseNamePL = MakeBaseNamePL1(ws, ext)
+    ' MakeBaseNamePL = MakeBaseNamePL2(ws, ext)
+    ' MakeBaseNamePL = MakeBaseNamePL3(ws, ext)
+    ' MakeBaseNamePL = MakeBaseNamePL4(ws, ext)   ' 新関数！20250514 by maruyama
+    MakeBaseNamePL = MakeBaseNamePL5(ws, ext)   ' 新関数！20250806 by maruyama
 End Function
 
 Function MakeBaseNamePL1(ws As Worksheet, ext As String) As String
